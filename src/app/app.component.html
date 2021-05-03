@@ -1,1 +1,5 @@
-<app-cliente-inserir></app-cliente-inserir>
+<app-cabecalho></app-cabecalho>
+<main>
+  <app-cliente-inserir (clienteAdicionado)="onClienteAdicionado($event)"></app-cliente-inserir>
+  <app-cliente-lista [clientes]="clientes"></app-cliente-lista>
+</main>
