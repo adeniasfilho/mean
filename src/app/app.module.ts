@@ -8,6 +8,7 @@ import{ MatInputModule} from "@angular/material/input";
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { HttpClientModule} from '@angular/common/http';
 import { CabecalhoComponent } from './cabecalho/cabecalho.component';
 import {MatToolbarModule} from "@angular/material/toolbar";
 import { ClienteListaComponent } from './clientes/cliente-lista/cliente-lista.component';
@@ -26,7 +27,8 @@ import { ClienteService } from './clientes/cliente.service';
     MatInputModule,MatToolbarModule,
     MatCardModule,
     MatButtonModule,MatExpansionModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    HttpClientModule,
   ],
   providers: [ClienteService],
   bootstrap: [AppComponent]
