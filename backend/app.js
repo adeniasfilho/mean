@@ -1,14 +1,13 @@
-const express = require("express");
+import express, { json } from "express";
 const app = express();
-const mongoose = require("mongoose");
+import { connect } from "mongoose";
 
-const Cliente = require("./models/cliente");
+import Cliente, { find, deleteOne } from "./models/cliente";
 
-app.use(express.json());
-//app.use(express.json());
+app.use(json());
 
-mongoose
-  .connect(
+
+connect(
     "mongodb+srv://adenias:mongodb123@cluster0.ajwhz.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
   )
   .then(() => {
@@ -45,7 +44,7 @@ app.post("/api/clientes", (req, res, next) => {
 });
 
 app.get("/api/clientes", (req, res, next) => {
-  Cliente.find().then((documents) => {
+  find().then((documents) => {
     res.status(200).json({
       mensagem: "Tudo OK",
       clientes: documents,
@@ -54,7 +53,7 @@ app.get("/api/clientes", (req, res, next) => {
 });
 
 app.delete("/api/clientes/:id", (req, res, next) => {
-  Cliente.deleteOne({
+  deleteOne({
     _id: req.params.id,
   }).then((resultado) => {
     console.log(resultado);
@@ -64,4 +63,4 @@ app.delete("/api/clientes/:id", (req, res, next) => {
   });
 });
 
-module.exports = app;
+export default app;
