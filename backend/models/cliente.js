@@ -1,14 +1,14 @@
 // importar o pacote mongoose
-const { formatNumber } = require("@angular/common");
+// importar o pacote mongoose
 const mongoose = require("mongoose");
 
-//definir o modelo = "Schema" (parece um modelo relacional)
+//definir o modelo = "schema" (parece um modelo relacional)
 const clienteSchema = mongoose.Schema({
-    nome:{type: String, required: true},
-    fone :{type:String, required: false, default: "00000000"},
-    email:{type:String, required: true}
-})
+  nome: { type: String, required: true },
+  fone: { type: String, required: false, default: "00000000" },
+  email: { type: String, required: true },
+});
 
-// exportar o modelo para torná-lo acessível a outros módulos da aplicação
-//Cliente é o nome associado a ese schema
-module.exports = mongoose.module("Cliente", clienteSchema);
+//exportar o modelo para torná-lo acessível aos outros módulos da aplicação
+//Cliente é o nome associado a esse schema
+module.exports = mongoose.model("Cliente", clienteSchema);
