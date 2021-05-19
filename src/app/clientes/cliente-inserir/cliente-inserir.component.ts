@@ -1,38 +1,57 @@
-import { Component, EventEmitter, Output } from '@angular/core';
-//remover
-import { Cliente } from '../cliente.model';
+import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { ActivatedRoute, ParamMap } from '@angular/router';
+import { Cliente } from '../cliente.model';
 import { ClienteService } from '../cliente.service';
 @Component({
   selector: 'app-cliente-inserir',
   templateUrl: './cliente-inserir.component.html',
   styleUrls: ['./cliente-inserir.component.css'],
 })
-export class ClienteInserirComponent {
-  constructor(public clienteService: ClienteService) {}
-  //remover
-  @Output() clienteAdicionado = new EventEmitter<Cliente>();
-  //remover
-  nome: string;
-  fone: string;
-  email: string;
-  onAdicionarCliente(form: NgForm) {
+export class ClienteInserirComponent implements OnInit {
+
+  private modo: string = 'criar';
+  private idCliente: string;
+  public cliente: Cliente;
+
+  ngOnInit() {
+    this.route.paramMap.subscribe((paramMap: ParamMap) => {
+      if (paramMap.has('idCliente')) {
+        this.modo = 'editar';
+        this.idCliente = paramMap.get("idCliente");
+        this.cliente = this.clienteService.getCliente(this.idCliente);
+      } else {
+        this.modo = 'criar';
+        this.idCliente = null;
+      }
+    });
+  }
+
+  constructor(
+    public clienteService: ClienteService,
+    public route: ActivatedRoute
+  ) { }
+
+  onSalvarCliente(form: NgForm) {
     if (form.invalid) {
       return;
     }
-    //remover
-    const cliente: Cliente = {
-      nome: form.value.nome,
-      fone: form.value.fone,
-      email: form.value.email,
-    };
-    this.clienteService.adicionarCliente(
-      form.value.nome,
-      form.value.fone,
-      form.value.email
-    );
+    if (this.modo === "criar") {
+      this.clienteService.adicionarCliente(
+        form.value.nome,
+        form.value.fone,
+        form.value.email
+      );
+    }
+    else {
+      this.clienteService.atualizarCliente(
+        this.idCliente,
+        form.value.nome,
+        form.value.fone,
+        form.value.email
+      )
+    }
+
     form.resetForm();
-    //remover
-    this.clienteAdicionado.emit(cliente);
   }
 }
