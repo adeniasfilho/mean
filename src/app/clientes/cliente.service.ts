@@ -3,13 +3,14 @@ import { Cliente } from './cliente.model';
 import { Subject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 @Injectable({ providedIn: 'root' })
 export class ClienteService {
   private clientes: Cliente[] = [];
   private listaClientesAtualizada = new Subject<Cliente[]>();
 
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient,private router:Router) {}
 
   getClientes(): void {
     this.httpClient
@@ -51,6 +52,7 @@ export class ClienteService {
         cliente.id = dados.id;
         this.clientes.push(cliente);
         this.listaClientesAtualizada.next([...this.clientes]);
+        this.router.navigate(['/']);
       });
   }
 
@@ -70,19 +72,27 @@ export class ClienteService {
   }
 
   getCliente(idCliente: string) {
-    return { ...this.clientes.find((cli) => cli.id === idCliente) }; //operador spread(busca todas as informações do cliente)
-
+    //return { ...this.clientes.find((cli) => cli.id === idCliente) };
+    //operador spread(busca todas as informações do cliente)
+    return this.httpClient.get<{
+      _id: string;
+      nome: string;
+      fone: string;
+      email: string;
+    }>(`http://localhost:3000/api/clientes/${idCliente}`);
   }
 
   atualizarCliente(id: string, nome: string, fone: string, email: string) {
     const cliente: Cliente = { id, nome, fone, email };
-    this.httpClient.put(`http://localhost:3000/api/clientes/${id}`, cliente)
-      .subscribe((res => {
+    this.httpClient
+      .put(`http://localhost:3000/api/clientes/${id}`, cliente)
+      .subscribe((res) => {
         const copia = [...this.clientes];
-        const indice = copia.findIndex(cli => cli.id === cliente.id);
+        const indice = copia.findIndex((cli) => cli.id === cliente.id);
         copia[indice] = cliente;
         this.clientes = copia;
         this.listaClientesAtualizada.next([...this.clientes]);
-      }));
+        this.router.navigate(['/'])
+      });
   }
 }
