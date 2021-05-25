@@ -3,7 +3,7 @@ const app = express();
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const clienteRoutes = require('./rotas/clientes');
-mongoose.connect('mongodb+srv://user_maua:senha_maua@cluster0.ssm0w.mongodb.net/pessoal - cliente ? retryWrites = true & w=majority')
+mongoose.connect('mongodb+srv://user_maua:mongodb123@cluster0.ssm0w.mongodb.net/pessoal - cliente ? retryWrites = true & w=majority')
   .then(() => {
     console.log("Conexão OK")
   }).catch((e) => {
