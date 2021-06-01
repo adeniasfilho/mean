@@ -46,11 +46,13 @@ export class ClienteInserirComponent implements OnInit {
             nome: dadosCli.nome,
             fone: dadosCli.fone,
             email: dadosCli.email,
+            imagemURL: dadosCli.imagemURL
           };
           this.form.setValue({
             nome: this.cliente.nome,
             fone: this.cliente.fone,
             email: this.cliente.email,
+            imagem: this.cliente.imagemURL
           });
         });
       } else {
@@ -82,7 +84,8 @@ export class ClienteInserirComponent implements OnInit {
         this.idCliente,
         this.form.value.nome,
         this.form.value.fone,
-        this.form.value.email
+        this.form.value.email,
+        this.form.value.imagem 
       );
     }
     this.form.reset();

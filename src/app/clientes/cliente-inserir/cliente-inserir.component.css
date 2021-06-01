@@ -7,15 +7,12 @@ mat-spinner {
   margin: auto;
 }
 
-input[type="file"] {
-  visibility: hidden;
+.cliente-imagem {
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
-.imagem-preview {
-  height: 5rem;
-  margin: 1rem 0;
-}
-
-.imagem-preview img {
-  height: 100%;
+.cliente-imagem>img {
+  max-width: 50%;
 }

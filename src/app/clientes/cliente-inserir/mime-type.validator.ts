@@ -1,9 +1,11 @@
 import { AbstractControl } from '@angular/forms';
-import { Observable, Observer } from 'rxjs';
+import { Observable, Observer, of } from 'rxjs';
 
 export const mimeTypeValidator = (
   control: AbstractControl
 ): Promise<{ [key: string]: any }> | Observable<{ [key: string]: any }> => { //json genérico
+  if (typeof(control.value) === 'string')
+return of(null);
   const arquivo = control.value as File;
   const leitor = new FileReader();
   const observable = new Observable(

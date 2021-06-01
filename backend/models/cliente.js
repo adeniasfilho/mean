@@ -6,7 +6,7 @@ import { Schema, model } from "mongoose";
 const clienteSchema = Schema({
   nome: { type: String, required: true },
   fone: { type: String, required: false, default: "00000000" },
-  email: { type: String, required: true },
+  email: { type: String, required: true }, imagemURL: {type: String, required: true}
 });
 
 //exportar o modelo para torná-lo acessível aos outros módulos da aplicação

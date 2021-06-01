@@ -10,12 +10,13 @@ export class ClienteService {
   private clientes: Cliente[] = [];
   private listaClientesAtualizada = new Subject<Cliente[]>();
 
-  constructor(private httpClient: HttpClient,private router:Router) {}
+  constructor(private httpClient: HttpClient, private router: Router) {}
 
-  getClientes(): void {
+  getClientes(pagesize: number, page: number): void {
+    const parametros = `?pagesize=${pagesize}&page=${page}`;
     this.httpClient
       .get<{ mensagem: string; clientes: any }>(
-        'http://localhost:3000/api/clientes'
+        'http://localhost:3000/api/clientes' + parametros
       )
       .pipe(
         map((dados) => {
@@ -25,6 +26,7 @@ export class ClienteService {
               nome: cliente.nome,
               fone: cliente.fone,
               email: cliente.email,
+              imagemURL: cliente.imagemURL,
             };
           });
         })
@@ -49,18 +51,18 @@ export class ClienteService {
     dadosCliente.append('imagem', imagem);
 
     this.httpClient
-      .post<{ mensagem: string; id: string }>(
+      .post<{ mensagem: string; cliente: Cliente }>(
         'http://localhost:3000/api/clientes',
         dadosCliente
       )
       .subscribe((dados) => {
-        console.log(dados.mensagem);
-        //cliente.id = dados.id;
+        /*cliente.id = dados.id;*/
         const cliente: Cliente = {
-          id : dados.id,
+          id: dados.cliente.id,
           nome: nome,
           fone: fone,
-          email: email
+          email: email,
+          imagemURL: dados.cliente.imagemURL,
         };
         this.clientes.push(cliente);
         this.listaClientesAtualizada.next([...this.clientes]);
@@ -91,20 +93,54 @@ export class ClienteService {
       nome: string;
       fone: string;
       email: string;
+      imagemURL: string;
     }>(`http://localhost:3000/api/clientes/${idCliente}`);
   }
 
-  atualizarCliente(id: string, nome: string, fone: string, email: string) {
-    const cliente: Cliente = { id, nome, fone, email };
+  atualizarCliente(
+    id: string,
+    nome: string,
+    fone: string,
+    email: string,
+    imagem: File | string
+  ) {
+    //const cliente: Cliente = { id, nome, fone, email, imagemURL: null};
+    let clienteData: Cliente | FormData;
+    if (typeof imagem === 'object') {
+      // é um arquivo, montar um form data
+      clienteData = new FormData();
+      clienteData.append('id', id);
+      clienteData.append('nome', nome);
+      clienteData.append('fone', fone);
+      clienteData.append('email', email);
+      clienteData.append('imagem', imagem, nome); //chave, foto e nome para o arquivo
+    } else {
+      //enviar JSON comum
+      clienteData = {
+        id: id,
+        nome: nome,
+        fone: fone,
+        email: email,
+        imagemURL: imagem,
+      };
+    }
+    console.log(typeof clienteData);
     this.httpClient
-      .put(`http://localhost:3000/api/clientes/${id}`, cliente)
+      .put(`http://localhost:3000/api/clientes/${id}`, clienteData)
       .subscribe((res) => {
         const copia = [...this.clientes];
-        const indice = copia.findIndex((cli) => cli.id === cliente.id);
+        const indice = copia.findIndex((cli) => cli.id === id);
+        const cliente: Cliente = {
+          id: id,
+          nome: nome,
+          fone: fone,
+          email: email,
+          imagemURL: '',
+        };
         copia[indice] = cliente;
         this.clientes = copia;
         this.listaClientesAtualizada.next([...this.clientes]);
-        this.router.navigate(['/'])
+        this.router.navigate(['/']);
       });
   }
 }
