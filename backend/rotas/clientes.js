@@ -100,18 +100,26 @@ router.get('', (req, res, next) => {
   const pageSize = +req.query.pagesize;
   const page = +req.query.page;
   const consulta = Cliente.find(); //só executa quando chamamos then
+  let clientesEncontrados;
+  
   if (pageSize && page) {
     consulta
       .skip(pageSize * (page - 1))
       .limit(pageSize);
   }
   consulta.then(documents => {
-    //console.log(documents)
-    res.status(200).json({
-      mensagem: "Tudo OK",
-      clientes: documents
-    });
-  })
+      clientesEncontrados = documents;
+      //devolve uma Promise, tratada com o próximo then
+      return Cliente.count();
+    })
+    .then((count) => {
+      res.status(200).json({
+        mensagem: "Tudo OK",
+        clientes: clientesEncontrados,
+        //devolvendo o count para o Front
+        maxClientes: count
+      });
+    })
 });
 
 module.exports = router;
